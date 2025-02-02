@@ -1,4 +1,3 @@
-
 import 'package:college_kpi_apps/screens_home/Academic_calender_screen.dart';
 import 'package:college_kpi_apps/screens_home/Booklist_screen.dart';
 import 'package:college_kpi_apps/screens_home/CGPA_screen.dart';
@@ -7,25 +6,22 @@ import 'package:college_kpi_apps/screens_home/More_screen.dart';
 import 'package:college_kpi_apps/screens_home/Probidhan_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-
 class HomePage extends StatefulWidget {
-
+  const HomePage({super.key});
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Home Page'),
+          title: const Text('Home Page'),
           backgroundColor: Colors.purple,
           elevation: 4.0,
            leading: Builder(
             builder: (context) => IconButton(
-        icon: Icon(Icons.menu),
+        icon: const Icon(Icons.menu),
        onPressed: () {
         Scaffold.of(context).openDrawer();
        },
@@ -36,7 +32,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                DrawerHeader(
+                const DrawerHeader(
                   decoration: BoxDecoration(color: Colors.purple),
                   child: Center(
                     child: Column(
@@ -46,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                           child: CircleAvatar(
                             radius: 30,
                             backgroundImage: AssetImage(
-                                "musa1.png"), // Replace with your image URL
+                                'assets/musa1.png'), // Replace with your image URL
                           ),
                         ),
                         SizedBox(height: 10),
@@ -57,18 +53,18 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text("Home"),
+                  leading: const Icon(Icons.home),
+                  title: const Text("Home"),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text("Settings"),
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Settings"),
                   onTap: () {},
                 ),
                 ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
+                  leading: const Icon(Icons.logout),
+                  title: const Text("Logout"),
                   onTap: () {},
                 ),
               ],
@@ -76,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,39 +91,39 @@ class _HomePageState extends State<HomePage> {
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfileScreen()));
                         },
-                        child: Text('Good Night')),
-                    subtitle: Text('Edit Profile'),
+                        child: const Text('Good Night')),
+                    subtitle: const Text('Edit Profile'),
                   ),
                 ),
-                SizedBox(height: 8.0),
-                SlidingTextCard(),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
+                const SlidingTextCard(),
+                const SizedBox(height: 8.0),
                 Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: ListTile(
+                  child: const ListTile(
                     leading: Icon(Icons.calendar_today, color: Colors.blue),
                     title: Text('Class Routine'),
                     subtitle: Text('Check Today\'s Class Routine?'),
                     trailing: Icon(Icons.arrow_forward, color: Colors.blue),
                   ),
                 ),
-                Divider(),
-                SizedBox(height: 16.0),
-                Text(
+                const Divider(),
+                const SizedBox(height: 16.0),
+                const Text(
                   'Recommended For You',
                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0)
                   ),
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisSpacing: 8.0,
                       crossAxisSpacing: 8.0,
@@ -158,21 +154,21 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProbidhansScreen(    )),
+                                    builder: (context) => const ProbidhansScreen(    )),
                               );
                               break;
                             case 1:
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProbidhansScreen()),
+                                    builder: (context) => const ProbidhansScreen()),
                               );
                               break;
                             case 2:
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AcademicCalendarScreen()),
+                                    builder: (context) => const AcademicCalendarScreen()),
                               );
                               break;
                             case 3:
@@ -185,13 +181,13 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BookListScreen()),
+                                    builder: (context) =>  BookListScreen()),
                               );
                               break;
                             case 5:
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => MoreScreen()),
+                                MaterialPageRoute(builder: (context) => const MoreScreen()),
                               );
                               break;
                           }
@@ -209,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.purple,
                               ),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             Text(categories[index], textAlign: TextAlign.center),
                           ],
                         ),
@@ -217,35 +213,35 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-                Text(
+                const Text(
                   'Browse',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GridView.count(
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     _buildCard('Study', Icons.school, Colors.orange),
                     _buildCard('BTEB Notice', Icons.campaign, Colors.green),
                     _buildCard('TMED', Icons.flag, Colors.red),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Others',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GridView.count(
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     _buildCard('Check Update', Icons.update, Colors.blue),
                     _buildCard('Rate App', Icons.star, Colors.yellow),
@@ -258,8 +254,8 @@ class _HomePageState extends State<HomePage> {
                     _buildCard('Materials', Icons.description, Colors.indigo),
                   ],
                 ),
-                SizedBox(height: 20),
-                Center(
+                const SizedBox(height: 20),
+                const Center(
                   child: Text(
                     'v0.0.1',
                     style: TextStyle(color: Colors.grey),
@@ -285,11 +281,11 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: color, size: 40),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
             ),
           ],
         ),
@@ -299,6 +295,8 @@ class _HomePageState extends State<HomePage> {
 }
 
 class SlidingTextCard extends StatefulWidget {
+  const SlidingTextCard({super.key});
+
   @override
   _SlidingTextCardState createState() => _SlidingTextCardState();
 }
@@ -315,7 +313,7 @@ class _SlidingTextCardState extends State<SlidingTextCard> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(seconds: 3), (timer) {
+    Timer.periodic(const Duration(seconds: 3), (timer) {
       setState(() {
         currentIndex = (currentIndex + 1) % texts.length;
       });
@@ -335,22 +333,22 @@ class _SlidingTextCardState extends State<SlidingTextCard> {
           children: [
             Row(
               children: [
-                Center(child: Icon(Icons.local_fire_department,
+                const Center(child: Icon(Icons.local_fire_department,
                     color: Colors.red)),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     child: Text(
                       texts[currentIndex],
                       key: ValueKey<String>(texts[currentIndex]),
-                      style: TextStyle(fontSize: 16.0),
+                      style: const TextStyle(fontSize: 16.0),
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(texts.length, (index) {

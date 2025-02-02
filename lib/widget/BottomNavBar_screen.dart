@@ -5,12 +5,12 @@ import 'package:college_kpi_apps/screens_home/Home_screen.dart';
 import 'package:college_kpi_apps/setting/Settings_screen.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class BottomNavBarScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _BottomNavBarScreenState createState() => _BottomNavBarScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            backgroundColor:Colors.blueAccent,
+            backgroundColor:Colors.purple,
             icon: Icon(Icons.home),
             label: 'Home',
           ),
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.purpleAccent,
+        selectedItemColor: Colors.cyanAccent,
         onTap: _onItemTapped,
       ),
     );
