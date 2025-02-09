@@ -1,261 +1,201 @@
-
 import 'package:college_kpi_apps/login_singup_screen/login_screen.dart';
 import 'package:college_kpi_apps/user_auth/firebaseauth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-class SinginScreen extends StatefulWidget {
-  const SinginScreen({super.key});
+class SigninScreen extends StatefulWidget {
+  const SigninScreen({super.key});
 
   @override
-  State<SinginScreen> createState() => _SinginScreenState();
+  State<SigninScreen> createState() => _SigninScreenState();
 }
 
-class _SinginScreenState extends State<SinginScreen> {
+class _SigninScreenState extends State<SigninScreen> {
   String email = "", name = "", password = "";
-  TextEditingController namecontroller = new TextEditingController();
-  TextEditingController emailcontroller = new TextEditingController();
-  TextEditingController passwordcontroller = new TextEditingController();
+  final TextEditingController namecontroller = TextEditingController();
+  final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController passwordcontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  registration (String email,password) async {
-    if ( password != null&& namecontroller.text!=""&& emailcontroller.text!="" ) {
-      try{
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password,);
-        ScaffoldMessenger.of(context).
-        showSnackBar(SnackBar(
-          content: Text(
-            "Regestered Successsfully",
-            style: TextStyle(
-                fontSize: 20.0),
-          ),
-        ),
+  registration(String email, String password) async {
+    if (password.isNotEmpty && namecontroller.text.isNotEmpty && emailcontroller.text.isNotEmpty) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
         );
-        //ignore: use_build_context_synchronously
-        Navigator.push(context
-            , MaterialPageRoute(
-                builder:(context) => LoginScreen()
-            ));
-      }on FirebaseAuthException catch(e) {
-        if (e.code == 'week-password') {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.orangeAccent,
-              content:
-              Text(
-                'Pasewrod Provider is too week',
-                style: TextStyle(fontSize: 18.0),)));
-        }else if
-        (e.code == "email-already-in-use"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "Account Already exists",
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ),
-          );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registered Successfully", style: TextStyle(fontSize: 18.0))),
+        );
+        if (!mounted) return;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+      } on FirebaseAuthException catch (e) {
+        String errorMsg = "An error occurred";
+        if (e.code == 'weak-password') {
+          errorMsg = 'Password provided is too weak';
+        } else if (e.code == "email-already-in-use") {
+          errorMsg = "Account already exists";
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(errorMsg, style: const TextStyle(fontSize: 16.0)),
+          ),
+        );
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    return
-      Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child:Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                     Row(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisAlignment: MainAxisAlignment.start,
-                       children: [
-                         Text(
-                          'Sign In you account',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                                             ),
-                       ],
-                     ),
-              SizedBox(height: 20,),
-              ClipOval(
-                child: Image.asset('assets/kurigram.jpeg'),
+              SizedBox(height: screenHeight * 0.05), // Dynamic Spacing
+              const Text(
+                'Sign In to your account',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.03),
+              Center(
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/kurigram.jpeg',
+                    width: screenWidth * 0.3, // Responsive image
+                    height: screenWidth * 0.3,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.04),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Use TextFormField instead of TextField
-                    TextFormField(
-                      controller: namecontroller,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        labelText: 'Username',
-                        labelStyle: TextStyle(color: Colors.black),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Plase enter your username';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20,),
-                    TextFormField(
-                      controller: emailcontroller,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        labelText: 'Email or Phone',
-                        labelStyle: TextStyle(color: Colors.black),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email or phone number';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    // Use TextFormField instead of TextField
-                    TextFormField(
-                      obscureText: true,
-                      controller: passwordcontroller,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.black),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
+                    _buildTextField(namecontroller, 'Username'),
+                    SizedBox(height: screenHeight * 0.02),
+                    _buildTextField(emailcontroller, 'Email or Phone'),
+                    SizedBox(height: screenHeight * 0.02),
+                    _buildTextField(passwordcontroller, 'Password', isPassword: true),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.02),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                    ),
-                  ),
+                  child: const Text('Forgot Password?', style: TextStyle(color: Colors.blueAccent)),
                 ),
               ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Navigate if form is valid
-                    setState(() {
-                      name=passwordcontroller.text;
-                      email=emailcontroller.text;
-                      password=passwordcontroller.text;
-                    });
-                    registration(email,password);
-                  }
-                },
-                child:Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 5,
-                    horizontal: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Center(
-                    child: Text('Continue'),
-                  ),
-                ),
-              ),
-
-
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.white,
-                      height: 1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'or',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.white,
-                      height: 1,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  GestureDetector(
-                    onTap: (){
-                      AuthMethods().signInWithGoogle (context);
-                    },
-                    child: IconButton(
-                      icon: Icon(Icons.facebook,
-                      ),
-                      color: Colors.blueAccent,
-                      onPressed: () {},
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  IconButton(onPressed: (){},
-                      icon: Icon(Icons.login))
-                ],
-              ),
-              SizedBox(height: 10,),
-              Spacer(),
-              Text(
-                "By continuing, you acknowledge that you have read and agree to our Terms & Conditions and Privacy Policy.",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
+              SizedBox(height: screenHeight * 0.03),
+              _buildContinueButton(screenWidth, screenHeight),
+              SizedBox(height: screenHeight * 0.04),
+              _buildOrDivider(),
+              SizedBox(height: screenHeight * 0.02),
+              _buildSocialLoginButtons(),
+              SizedBox(height: screenHeight * 0.03),
+              _buildPrivacyText(),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool isPassword = false}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter your $label';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildContinueButton(double screenWidth, double screenHeight) {
+    return GestureDetector(
+      onTap: () {
+        if (_formKey.currentState!.validate()) {
+          setState(() {
+            email = emailcontroller.text;
+            password = passwordcontroller.text;
+          });
+          registration(email, password);
+        }
+      },
+      child: Container(
+        width: screenWidth * 0.8,
+        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+        decoration: BoxDecoration(
+          color: Colors.purple,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: const Center(
+          child: Text(
+            'Continue',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrDivider() {
+    return const Row(
+      children: [
+        Expanded(child: Divider(color: Colors.grey)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text('or', style: TextStyle(color: Colors.grey)),
+        ),
+        Expanded(child: Divider(color: Colors.grey)),
+      ],
+    );
+  }
+
+  Widget _buildSocialLoginButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.facebook, color: Colors.blueAccent),
+          onPressed: () {
+            AuthMethods().signInWithGoogle(context);
+          },
+        ),
+        const SizedBox(width: 10),
+        IconButton(
+          icon: const Icon(Icons.login),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacyText() {
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Text(
+        "By continuing, you acknowledge that you have read and agree to our Terms & Conditions and Privacy Policy.",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.grey),
+      ),
+    );
   }
 }

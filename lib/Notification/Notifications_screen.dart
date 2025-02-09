@@ -32,62 +32,69 @@ class NotificationScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Diplomaian"),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double width = constraints.maxWidth;
+          double padding = (width > 600) ? 20.0 : 8.0; // Adjust padding based on screen width
+
+          return ListView.builder(
+            padding: EdgeInsets.all(padding),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                margin: EdgeInsets.symmetric(vertical: padding),
+                elevation: 4,
+                child: Padding(
+                  padding: EdgeInsets.all(padding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        item['date']!,
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.copy, color: Colors.purple),
-                            onPressed: () {
-                              // Add copy functionality
-                            },
+                          Text(
+                            item['date']!,
+                            style: TextStyle(
+                              fontSize: (width > 600) ? 16.0 : 14.0, // Larger text on wider screens
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.share, color: Colors.purple),
-                            onPressed: () {
-                              // Add share functionality
-                            },
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.copy, color: Colors.purple),
+                                onPressed: () {
+                                  // Add copy functionality
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.share, color: Colors.purple),
+                                onPressed: () {
+                                  // Add share functionality
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        item['title']!,
+                        style: TextStyle(
+                          fontSize: (width > 600) ? 18.0 : 16.0, // Larger text on wider screens
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    item['title']!,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       ),

@@ -1,7 +1,8 @@
 import 'package:college_kpi_apps/login_singup_screen/singup_screen.dart';
 import 'package:college_kpi_apps/widget/BottomNavBar_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -10,75 +11,78 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String email = "", name = "", password = "";
-  TextEditingController emailcontroller = new TextEditingController();
-  TextEditingController passwordcontroller = new TextEditingController();
+  String email = "", password = "";
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   userLogin(String email, String password) async {
-    if (password.isNotEmpty && emailcontroller.text.isNotEmpty && passwordcontroller.text.isNotEmpty) {
+    if (password.isNotEmpty && email.isNotEmpty) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            "Logged in successfully",
-            style: TextStyle(fontSize: 20.0),
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Logged in successfully", style: TextStyle(fontSize: 18.0)),
           ),
-        ));
+        );
         Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBarScreen()));
       } on FirebaseAuthException catch (e) {
+        String errorMsg = "An error occurred";
         if (e.code == 'wrong-password') {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "Wrong password provided",
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ));
+          errorMsg = "Wrong password provided";
         } else if (e.code == "user-not-found") {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.orangeAccent,
-            content: Text(
-              "No account found for this email",
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ));
+          errorMsg = "No account found for this email";
         }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(errorMsg, style: TextStyle(fontSize: 16.0)),
+          ),
+        );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Container(
-        child: Padding(
-          padding: EdgeInsets.all(20),
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic padding
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.start,
-                   children: [
-                     Text(
-                       'Log In your account',
-                       style: TextStyle(
-                         color:Colors.black,
-                         fontSize: 20,
-                       ),
-                     ),
-                   ],
-                 ),
-              SizedBox(width: 30),
-              ClipOval(
-                child: Image.asset('assets/kurigram.jpeg'),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Log In to your account',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: screenWidth * 0.06, // Responsive font size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.02), // Responsive spacing
+              ClipOval(
+                child: Image.asset(
+                  'assets/kurigram.jpeg',
+                  height: screenWidth * 0.25, // Adjust image size
+                  width: screenWidth * 0.25,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Use TextFormField instead of TextField
                     TextFormField(
                       controller: emailcontroller,
                       style: TextStyle(color: Colors.black),
@@ -87,159 +91,102 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelStyle: TextStyle(color: Colors.black),
                         filled: true,
                         fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email or phone number';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your email or phone number' : null,
                     ),
-                    SizedBox(height: 20),
-                    // Use TextFormField instead of TextField
+                    SizedBox(height: screenHeight * 0.02),
                     TextFormField(
                       obscureText: true,
                       controller: passwordcontroller,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: TextStyle(color: Colors.black),
                         filled: true,
                         fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your password' : null,
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.015),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
+                  onPressed: () {},
+                  child: Text('Forgot Password?', style: TextStyle(color: Colors.blueAccent)),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
+              SizedBox(
+                width: double.infinity,
+                height: screenHeight * 0.06, // Adjust button height
+                child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordScreen()));
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        email = emailcontroller.text;
+                        password = passwordcontroller.text;
+                      });
+                      userLogin(email, password);
+                    }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  ),
                   child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                    ),
+                    'Continue',
+                    style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.04),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState!.validate()){
-                    // Navigate if form is valid
-                    setState(() {
-                      email=emailcontroller.text;
-                      password=passwordcontroller.text;
-                    });userLogin(email,password);
-                  }
-                },
-                child:Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 5,
-                    horizontal: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Center(
-                    child: Text('Continue'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.02),
               Row(
                 children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.white,
-                      height: 1,
-                    ),
-                  ),
+                  Expanded(child: Divider(color: Colors.grey)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'or',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('or', style: TextStyle(color: Colors.black)),
                   ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.white,
-                      height: 1,
-                    ),
-                  ),
+                  Expanded(child: Divider(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.facebook),
-                    color: Colors.blueAccent,
+                    icon: Icon(Icons.facebook, color: Colors.blueAccent),
                     onPressed: () {},
                   ),
-                  SizedBox(width: 20),
-                  IconButton(onPressed: (){},
-                      icon: Icon(Icons.login_rounded))
+                  IconButton(
+                    icon: Icon(Icons.login_rounded),
+                    onPressed: () {},
+                  ),
                 ],
               ),
+              SizedBox(height: screenHeight * 0.015),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have a acoount?",
-                  style: TextStyle(
-                    color: Colors.black
-                  ),
-                  ),
-                  GestureDetector(
-                    onTap: (){
-                      if(_formKey.currentState!.validate()){
-                        setState(() {
-                          email = emailcontroller.text;
-                          password = passwordcontroller.text;
-                        });
-                        userLogin(email,password);
-                      }
+                  Text("Don't have an account?", style: TextStyle(color: Colors.black)),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SigninScreen()));
                     },
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SinginScreen()));
-                        },
-                        child: Text(
-                          'SingUp',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
+                    child: Text('Sign Up', style: TextStyle(color: Colors.blueAccent)),
                   ),
                 ],
               ),
-              Spacer(),
+              SizedBox(height: screenHeight * 0.02),
               Text(
                 "By continuing, you acknowledge that you have read and agree to our Terms & Conditions and Privacy Policy.",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.035),
               ),
             ],
           ),

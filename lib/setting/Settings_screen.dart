@@ -1,89 +1,8 @@
-// import 'package:flutter/material.dart';
-//
-// class SettingScreen extends StatelessWidget {
-//   final List<Map<String, dynamic>> menuItems = [
-//     {
-//       'icon': Icons.person,
-//       'text': 'Smart Profile',
-//       'onTap': () {
-//         print('Smart Profile clicked');
-//       },
-//     },
-//     {
-//       'icon': Icons.group,
-//       'text': 'About Us',
-//       'onTap': () {
-//         print('About Us clicked');
-//       },
-//     },
-//     {
-//       'icon': Icons.report,
-//       'text': 'Report',
-//       'onTap': () {
-//         print('Report clicked');
-//       },
-//     },
-//     {
-//       'icon': Icons.calculate,
-//       'text': 'CGPA Calculator',
-//       'onTap': () {
-//         print('CGPA Calculator clicked');
-//       },
-//     },
-//     {
-//       'icon': Icons.dark_mode,
-//       'text': 'Dark Mode',
-//       'onTap': () {
-//         print('Dark Mode toggled');
-//       },
-//       'isSwitch': true,
-//     },
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Diplomain'),
-//         backgroundColor: Colors.purple,
-//       ),
-//       body: ListView.builder(
-//         itemCount: menuItems.length,
-//         itemBuilder: (context, index) {
-//           final item = menuItems[index];
-//           return Card(
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(12.0)
-//             ),
-//             margin: EdgeInsets.symmetric(vertical: 8.0),
-//             elevation: 4,
-//             child: ListTile(
-//               leading: Icon(item['icon'], color: Colors.purple),
-//               title: Text(item['text']),
-//               trailing: item['isSwitch'] == true
-//                   ? Switch(
-//                 value: false,
-//                 onChanged: (value) {
-//                   print('Dark Mode toggled: $value');
-//                 },
-//               )
-//                   : null,
-//               onTap: item['onTap'] != null ? item['onTap'] : null,
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-
-
-
+import 'package:college_kpi_apps/setting/About_screen.dart';
+import 'package:college_kpi_apps/setting/Report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Theme Provider to handle light/dark mode switching
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
@@ -103,45 +22,73 @@ class SettingsScreen extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Settings"), backgroundColor: Colors.purple),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildListTile(Icons.person, "Smart Profile"),
-            _buildListTile(Icons.groups, "About Us"),
-            _buildListTile(Icons.report, "Report"),
-            _buildListTile(Icons.calculate, "CGPA Calculator"),
+      appBar: AppBar(title: const Text("Settings"), backgroundColor: Colors.purple),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            double width = constraints.maxWidth;
+            double padding = (width > 600) ? 20.0 : 16.0; // Adjust padding based on screen width
+            double fontSize = (width > 600) ? 18.0 : 16.0; // Adjust font size for larger screens
 
-            // Dark Mode Toggle
-            Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: ListTile(
-                leading: Icon(Icons.nightlight_round, color: Colors.purple),
-                title: Text("Dark Mode"),
-                trailing: Switch(
-                  value: themeProvider.isDarkMode,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme(value);
-                  },
-                ),
+            return Padding(
+              padding: EdgeInsets.all(padding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildListTile(Icons.person, "Smart Profile", context, SmartProfileScreen(), fontSize),
+                  _buildListTile(Icons.groups, "About Us", context, const AboutUsScreen(), fontSize),
+                  _buildListTile(Icons.report, "Report", context, ReportScreen(), fontSize),
+                  _buildListTile(Icons.calculate, "CGPA Calculator", context, CGPACalculatorScreen(), fontSize),
+
+                  // Dark Mode Toggle
+                  Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      leading: const Icon(Icons.nightlight_round, color: Colors.purple),
+                      title: Text("Dark Mode", style: TextStyle(fontSize: fontSize)),
+                      trailing: Switch(
+                        value: themeProvider.isDarkMode,
+                        onChanged: (value) {
+                          themeProvider.toggleTheme(value);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildListTile(IconData icon, String title) {
+  Widget _buildListTile(IconData icon, String title, BuildContext context, Widget screen, double fontSize) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: Icon(icon, color: Colors.purple),
-        title: Text(title),
-        onTap: () {},
+        title: Text(title, style: TextStyle(fontSize: fontSize)), // Adjust font size here
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+        },
       ),
     );
+  }
+}
 
+// Dummy Screens
+class SmartProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text("Smart Profile")), body: Center(child: Text("Smart Profile Page")));
+  }
+}
+
+class CGPACalculatorScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text("CGPA Calculator")), body: Center(child: Text("CGPA Calculator Page")));
   }
 }
